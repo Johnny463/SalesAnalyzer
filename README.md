@@ -83,6 +83,16 @@ The API relies on three main data sheets:
    
     api/trends_forecasting  `GET`
 
+
+## Architecture Overview:
+The project follows a typical client-server architecture, where the server hosts a Flask web application providing API endpoints to interact with the client. The client can be any application or service that consumes the API endpoints, such as a web browser, mobile app, or another server.
+## Technologies Used:
+- Flask
+- Python
+- Pandas
+- OpenAI API
+- Git
+
 ## Contributing
 
 Contributions to the Sales Analyzer API are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
