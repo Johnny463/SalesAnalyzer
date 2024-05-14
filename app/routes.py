@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import pandas as pd
-from .llm_integration import generate_insights_prompt, generate_feedback
+from .llm_integration import generate_insights_prompt, generate_feedback,generate_trends_prompt
 from datetime import datetime
 main = Blueprint('main', __name__)
 
@@ -93,9 +93,28 @@ def assess_team_performance():
     return jsonify({"feedback": feedback2})
     # return jsonify(insights)
 
-# @main.route('/api/trends_forecasting', methods=['GET'])
-# def trends_forecasting():
-#     data = read_data('path/to/historical_data.csv', 'csv')
-#     prompt = "Forecast the sales performance trends based on this data."
-#     insight = ask_gpt(prompt)
-#     return jsonify({"insight": insight})
+@main.route('/api/trends_forecasting', methods=['GET'])
+def trends_forecasting():
+    # Create DataFrame
+    history_df = pd.DataFrame(history_table)
+
+    # Convert 'available date' column to datetime format where possible
+    history_df['available date'] = pd.to_datetime(history_df['available date'], errors='coerce')
+
+    # Filter out rows with valid dates
+    valid_dates_df = history_df.dropna(subset=['available date'])
+
+    # Extract month and year from 'available date' column
+    valid_dates_df['month'] = valid_dates_df['available date'].dt.month
+    valid_dates_df['year'] = valid_dates_df['available date'].dt.year
+
+    # Group data by month and year, and calculate total sales for each month
+    monthly_sales = valid_dates_df.groupby(['year', 'month'])['price'].sum()
+
+    # Display the month-wise sales and corresponding months
+    print("Month-wise sales:")
+    # print(monthly_sales)
+    
+
+    insights=generate_trends_prompt(monthly_sales)
+    return jsonify({"insights": insights})

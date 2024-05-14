@@ -50,3 +50,17 @@ def generate_insights_prompt(team_performance):
 
     # Extract the generated insights from the response
     return response.choices[0].message.content
+def generate_trends_prompt(monthly_sales):
+    # Define the prompt
+    prompt = f"The following data represents the total sales amount for each month and year:{monthly_sales}.Based on this data, please provide insights and forecasts regarding the sales performance trends by month and year."
+
+    response = client.chat.completions.create(
+        model="gpt-4",  # Specify the model to use (e.g., gpt-4)
+        messages=[
+            {"role": "system", "content": "User: " + prompt}
+        ],
+        max_tokens=200  # Maximum number of tokens for the response
+    )
+
+    # Extract the generated insights from the response
+    return response.choices[0].message.content
